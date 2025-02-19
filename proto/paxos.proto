@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package paxos; 
+
+
+/**
+ *
+ * Implementation must have
+ * send ping(leader claim)
+ * recieve ping(check leader status)
+ * leader election
+ * create proposal
+ * send prepare command to acceptors(peers)
+ * send accept command to acceptors(peers)
+ * majority check((peers / 2) + 1)
+ * commit proposal(learners(peers) commit)
+ * get status(leader + peers status(health, proposal list, accept list))
+ *
+ */
+
+service PaxosService {
+	rpc ping(PingRequest) returns (PingResponse) {}
+	rpc propose(ProposerRequest) returns (ProposerResponse) {}
+	rpc accept(AcceptorRequest) returns (AcceptorResponse) {}
+	rpc commit(LearnerRequest) returns (LearnerResponse) {}
+
+
+}
+
+message PingRequest {}
+
+message PingResponse {
+	bool health = 1;
+}
+
+message ProposerRequest {
+	string seq_id = 1;
+	string key = 2;
+	string value = 3;
+}
+
+message ProposerResponse{
+	string seq_id = 1;
+	string key = 2;
+	string value = 3;
+}
+
+message AcceptorRequest {
+	string seq_id = 1;
+	string key = 2;
+	string value = 3;
+}
+
+message AcceptorResponse {
+	string seq_id = 1;
+	string key = 2;
+	string value = 3;
+}
+
+message LearnerRequest {
+	string key = 1;
+	string value = 2;
+}
+
+message LearnerResponse {
+	bool status = 1;
+}
