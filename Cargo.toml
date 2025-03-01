@@ -8,6 +8,7 @@ veresiye = "1.0.9"
 tokio = {version = "1.43.0", features = ["full"]}
 prost = "0.13.4"
 tonic = "0.12.3"
+tonic-reflection = "0.12.3"
 
 
 [build-dependencies]
