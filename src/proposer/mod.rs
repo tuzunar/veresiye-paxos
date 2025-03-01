@@ -6,7 +6,7 @@ use crate::{
     proposal::Proposal,
 };
 
-#[derive(Default)]
+//#[derive(Default)]
 pub struct Proposer {
     acceptor: Acceptor,
     learner: Learner,
