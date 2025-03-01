@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package paxos; 
+package paxos;
 
 
 /**
@@ -18,13 +18,48 @@ package paxos;
  *
  */
 
-service PaxosService {
+
+enum proto_Acceptor_Status {
+    Proposing = 0;
+    Accepted = 1;
+    Failed = 2;
+    Reject = 3;
+    Idle = 4;
+}
+
+enum proto_Connection_Status {
+    Active = 0;
+    Unreachable = 1;
+    Retrying = 2;
+}
+
+service Paxos {
 	rpc ping(PingRequest) returns (PingResponse) {}
 	rpc propose(ProposerRequest) returns (ProposerResponse) {}
 	rpc accept(AcceptorRequest) returns (AcceptorResponse) {}
 	rpc commit(LearnerRequest) returns (LearnerResponse) {}
+    rpc register(RegisterRequest) returns (RegisterResponse) {}
+    rpc send_register(RegisterRequest) returns (RegisterResponse) {}
+    rpc insert(InsertRequest) returns (InsertResponse) {}
+}
 
+message RegisterRequest {
+    int32 node_id = 1;
+    string addr = 2;
+    proto_Connection_Status status = 3;
+}
 
+message RegisterResponse {
+    bool register_status = 1;
+}
+
+message InsertRequest {
+    string key = 1;
+    string value = 2;
+}
+
+message InsertResponse {
+    bool result = 1;
 }
 
 message PingRequest {}
@@ -39,10 +74,11 @@ message ProposerRequest {
 	string value = 3;
 }
 
-message ProposerResponse{
-	string seq_id = 1;
-	string key = 2;
-	string value = 3;
+//Propose request return a promise
+message ProposerResponse {
+	int32 promised_proposal_id = 1;
+	optional int32 accepted_proposal_id = 2;
+	optional string accepted_value = 3;
 }
 
 message AcceptorRequest {
@@ -52,14 +88,15 @@ message AcceptorRequest {
 }
 
 message AcceptorResponse {
-	string seq_id = 1;
-	string key = 2;
-	string value = 3;
+	proto_Acceptor_Status status = 1;
+	string proposal_id = 2;
+	ProposerRequest proposal = 3;
 }
 
 message LearnerRequest {
-	string key = 1;
-	string value = 2;
+    string proposal_id = 1;
+	string key = 2;
+	string value = 3;
 }
 
 message LearnerResponse {
