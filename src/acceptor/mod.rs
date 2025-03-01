@@ -12,9 +12,10 @@ pub enum Acceptor_Status {
     Idle,
 }
 
+#[derive(Debug)]
 pub struct Promise {
-    promised_proposal_id: usize,
-    accepted_proposal_id: Option<usize>,
+    promised_proposal_id: i32,
+    accepted_proposal_id: Option<i32>,
     accepted_value: Option<String>,
 }
 
@@ -50,19 +51,23 @@ impl Acceptor {
         if self.max_seen_proposal_seq > proposal.get_seq_id().clone() {
             return None;
         }
-        self.max_seen_proposal_seq = usize::from(proposal.get_seq_id().clone());
+        self.set_max_seen_proposal_seq(usize::from(proposal.get_seq_id().clone()));
         let last_proposal = self.get_last_accepted_proposal();
-        Some(Promise {
-            promised_proposal_id: self.max_seen_proposal_seq,
-            accepted_proposal_id: match last_proposal {
-                Some(prop) => Some(prop.get_seq_id()),
-                None => None,
-            },
-            accepted_value: match last_proposal {
-                Some(prop) => Some(String::from(prop.get_value())),
-                None => None,
-            },
-        })
+        let promised_proposal_id = self.max_seen_proposal_seq as i32;
+        let accepted_proposal_id = match last_proposal {
+            Some(prop) => Some(prop.get_seq_id() as i32),
+            None => None,
+        };
+        let accepted_value = match last_proposal {
+            Some(prop) => Some(String::from(prop.get_value())),
+            None => None,
+        };
+        let promise = Promise::new(promised_proposal_id, accepted_proposal_id, accepted_value);
+        Some(promise)
+    }
+
+    fn set_max_seen_proposal_seq(&mut self, value: usize) {
+        self.max_seen_proposal_seq = value
     }
 
     pub fn accept(&mut self, proposal: Proposal) -> Option<Accept_Message> {
@@ -92,6 +97,30 @@ impl Acceptor {
         } else {
             None
         }
+    }
+}
+
+impl Promise {
+    pub fn new(
+        promised_proposal_id: i32,
+        accepted_proposal_id: Option<i32>,
+        accepted_value: Option<String>,
+    ) -> Self {
+        Self {
+            promised_proposal_id,
+            accepted_proposal_id,
+            accepted_value,
+        }
+    }
+
+    pub fn get_promised_proposal_id(&self) -> i32 {
+        self.promised_proposal_id
+    }
+    pub fn get_accepted_proposal_id(&self) -> Option<i32> {
+        self.accepted_proposal_id
+    }
+    pub fn get_accepted_value(&self) -> Option<String> {
+        self.accepted_value.clone()
     }
 }
 
