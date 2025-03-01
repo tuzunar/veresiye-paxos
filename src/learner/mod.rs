@@ -2,7 +2,6 @@ use veresiye::Veresiye;
 
 use crate::proposal::{self, Proposal};
 
-#[derive(Default)]
 pub struct Learner {
     database: Veresiye,
 }
