@@ -6,9 +6,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     tonic_build::configure()
         .file_descriptor_set_path(out_dir.join("paxos_descriptor.bin"))
-        .compile(&["./proto/paxos.proto"], &["proto"])?;
+        .compile_protos(&["./proto/paxos.proto"], &["proto"])?;
 
-    tonic_build::compile_protos("proto/paxos.proto")?;
+    //tonic_build::compile_protos("proto/paxos.proto")?;
 
     Ok(())
 }
