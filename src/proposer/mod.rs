@@ -10,6 +10,7 @@ use crate::{
 pub struct Proposer {
     acceptor: Acceptor,
     learner: Learner,
+    last_seen_propose_id: i32,
 }
 
 impl Proposer {
@@ -17,8 +18,21 @@ impl Proposer {
         let database = Veresiye::new(db_path).unwrap();
         let acceptor = Acceptor::new();
         let learner = Learner::new(database);
+        let last_seen_propose_id: i32 = 0;
 
-        Self { acceptor, learner }
+        Self {
+            acceptor,
+            learner,
+            last_seen_propose_id,
+        }
+    }
+
+    pub fn get_last_seen_propose_id(&self) -> i32 {
+        self.last_seen_propose_id
+    }
+
+    pub fn set_last_seen_propose_id(&mut self, id: i32) {
+        self.last_seen_propose_id = id;
     }
 
     pub fn prepare(&mut self, proposal: Proposal) -> Option<Promise> {
