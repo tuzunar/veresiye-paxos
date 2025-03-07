@@ -9,6 +9,7 @@ tokio = {version = "1.43.0", features = ["full"]}
 prost = "0.13.4"
 tonic = "0.12.3"
 tonic-reflection = "0.12.3"
+port_check = "0.2.1"
 
 
 [build-dependencies]
