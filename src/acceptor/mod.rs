@@ -23,15 +23,15 @@ pub struct Promise {
 pub struct Acceptor {
     status: Acceptor_Status,
     local_generation: usize,
-    max_seen_proposal_seq: usize,
-    max_seen_accept_seq: usize,
+    max_seen_proposal_seq: i32,
+    max_seen_accept_seq: i32,
     promised_proposals: Vec<Proposal>,
     accepted_proposals: Vec<Proposal>,
 }
 
 pub struct Accept_Message {
     pub status: Acceptor_Status,
-    pub proposal_id: usize,
+    pub proposal_id: i32,
     pub proposal: Proposal,
 }
 
@@ -51,7 +51,7 @@ impl Acceptor {
         if self.max_seen_proposal_seq > proposal.get_seq_id().clone() {
             return None;
         }
-        self.set_max_seen_proposal_seq(usize::from(proposal.get_seq_id().clone()));
+        self.set_max_seen_proposal_seq(proposal.get_seq_id().clone());
         let last_proposal = self.get_last_accepted_proposal();
         let promised_proposal_id = self.max_seen_proposal_seq as i32;
         let accepted_proposal_id = match last_proposal {
@@ -66,7 +66,7 @@ impl Acceptor {
         Some(promise)
     }
 
-    fn set_max_seen_proposal_seq(&mut self, value: usize) {
+    fn set_max_seen_proposal_seq(&mut self, value: i32) {
         self.max_seen_proposal_seq = value
     }
 
