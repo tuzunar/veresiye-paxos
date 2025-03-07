@@ -39,9 +39,10 @@ service Paxos {
 	rpc accept(AcceptorRequest) returns (AcceptorResponse) {}
 	rpc commit(LearnerRequest) returns (LearnerResponse) {}
     rpc register(RegisterRequest) returns (RegisterResponse) {}
-    rpc send_register(RegisterRequest) returns (RegisterResponse) {}
-    rpc insert(InsertRequest) returns (InsertResponse) {}
+	rpc send_register(RegisterRequest) returns (RegisterResponse) {}
+	rpc insert(InsertRequest) returns (InsertResponse) {}
 }
+
 
 message RegisterRequest {
     int32 node_id = 1;
@@ -69,7 +70,7 @@ message PingResponse {
 }
 
 message ProposerRequest {
-	string seq_id = 1;
+	int32 proposal_id = 1;
 	string key = 2;
 	string value = 3;
 }
@@ -79,26 +80,29 @@ message ProposerResponse {
 	int32 promised_proposal_id = 1;
 	optional int32 accepted_proposal_id = 2;
 	optional string accepted_value = 3;
+    int32 node_id  = 4;
 }
 
 message AcceptorRequest {
-	string seq_id = 1;
+	int32 proposal_id = 1;
 	string key = 2;
 	string value = 3;
 }
 
 message AcceptorResponse {
 	proto_Acceptor_Status status = 1;
-	string proposal_id = 2;
+	int32 proposal_id = 2;
 	ProposerRequest proposal = 3;
+    int32 node_id = 4;
 }
 
 message LearnerRequest {
-    string proposal_id = 1;
+    int32 proposal_id = 1;
 	string key = 2;
 	string value = 3;
 }
 
 message LearnerResponse {
 	bool status = 1;
+    int32 node_id = 2;
 }
