@@ -48,14 +48,14 @@ impl Acceptor {
     }
 
     pub fn prepare(&mut self, proposal: Proposal) -> Option<Promise> {
-        if self.max_seen_proposal_seq > proposal.get_seq_id().clone() {
+        if self.max_seen_proposal_seq > proposal.get_proposal_id().clone() {
             return None;
         }
-        self.set_max_seen_proposal_seq(proposal.get_seq_id().clone());
+        self.set_max_seen_proposal_seq(proposal.get_proposal_id().clone());
         let last_proposal = self.get_last_accepted_proposal();
         let promised_proposal_id = self.max_seen_proposal_seq as i32;
         let accepted_proposal_id = match last_proposal {
-            Some(prop) => Some(prop.get_seq_id() as i32),
+            Some(prop) => Some(prop.get_proposal_id() as i32),
             None => None,
         };
         let accepted_value = match last_proposal {
@@ -71,18 +71,18 @@ impl Acceptor {
     }
 
     pub fn accept(&mut self, proposal: Proposal) -> Option<Accept_Message> {
-        if self.max_seen_proposal_seq > proposal.get_seq_id() {
+        if self.max_seen_proposal_seq > proposal.get_proposal_id() {
             return None;
         }
 
         let prop = proposal.clone();
 
-        self.max_seen_accept_seq = prop.get_seq_id().clone();
+        self.max_seen_accept_seq = prop.get_proposal_id().clone();
         self.accepted_proposals.push(prop.clone());
 
         Some(Accept_Message {
             status: Acceptor_Status::Accepted,
-            proposal_id: prop.get_seq_id().clone(),
+            proposal_id: prop.get_proposal_id().clone(),
             proposal: prop.clone(),
         })
     }
