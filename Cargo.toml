@@ -5,11 +5,16 @@ edition = "2021"
 
 [dependencies]
 veresiye = "1.0.9"
-tokio = {version = "1.43.0", features = ["full"]}
+tokio = { version = "1.43.0", features = ["full"] }
 prost = "0.13.4"
 tonic = "0.12.3"
 tonic-reflection = "0.12.3"
 port_check = "0.2.1"
+reqwest = { version = "0.12.12", features = ["json"] }
+serde_json = "1.0"
+tower = { version = "0.5.2", features = ["full"] }
+tower-http = { version = "0.6.2", features = ["full"] }
+tonic-web = "0.12.3"
 
 
 [build-dependencies]
